@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from PIL import ImageFont, Image
+from PIL import Image, ImageFont, ImageDraw
 
 
 class Position(object):
-    def __init__(self, x, y, order):
+    def __init__(self, x, y, order=0):
         self.x = x
         self.y = y
         self.order = order
@@ -33,11 +33,12 @@ class ImagePrimitive(object):
         return self._image
 
     def resize(self, size):
-        if size != self.image.size:
+        if size is not None and size != self.image.size:
             self._image = self.image.resize(size, Image.ANTIALIAS)
 
     def crop(self, crop_coords):
-        self.image.crop(crop_coords)
+        if crop_coords:
+            self._image = self.image.crop(crop_coords)
 
     def add_to_canvas(self, canvas):
         self.resize(self.re_size)
@@ -57,11 +58,13 @@ class TextPrimitive(object):
     @property
     def font(self):
         if self._font is None:
-            self._font = ImageFont.truetype(filename=self._fontpath, size=self._fontsize, encoding='utf-8')
+            self._font = ImageFont.truetype(filename=self._fontpath, size=self._fontsize, encoding='unic')
         return self._font
 
     def add_to_canvas(self, canvas):
-        canvas.text(self.position.top_left(), self.text, self.color, font=self.font)
+        draw = ImageDraw.Draw(canvas)
+        draw.text(self.position.top_left(), self.text, self.color, font=self.font)
+        del draw
 
 
 class ImageCombine(object):
