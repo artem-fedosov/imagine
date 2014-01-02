@@ -71,7 +71,7 @@ class ImageCombine(object):
     def __init__(self, primitives, size, bg_color="white"):
         self.size = size
         self.bg_color = bg_color
-        self.primitives = list(sorted(primitives, key=lambda x: x.order))
+        self.primitives = list(sorted(primitives, key=lambda x: x.position.order))
 
     def save_to(self, filename):
         canvas = Image.new("RGB", self.size, self.bg_color)
