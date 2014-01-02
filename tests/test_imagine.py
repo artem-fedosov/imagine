@@ -3,6 +3,8 @@
 import unittest
 from PIL import Image, ImageDraw
 from imagine.primitives import Position, TextPrimitive, ImagePrimitive, ImageCombine
+from card1 import Card1
+
 
 TEST_DATA = dict(
     font_path_bold='./font/Exo2-Bold.ttf',
@@ -43,62 +45,18 @@ class TestPrimitives(unittest.TestCase):
 
 class TestCombine(unittest.TestCase):
     def test_combine(self):
-        image_primitive = ImagePrimitive(
-            position=Position(50, 50),
-            filename=TEST_DATA['image_path'],
-            re_size=(400, 400),
-            crop_coords=(50, 0, 350, 400)
+        card = Card1(
+            text_bold1=u'Федосов Артем',
+            text_bold2=u'Борисович',
+            text_light_grey1=u'Босс мафии',
+            text_small_grey1=u'тел: +7 985 123 4567',
+            text_small_grey2=u'email: boss.mafii@owndomain.ru',
+            text_small_grey3=u'Рязань, ул. Пушкина 29/1',
+            font_path1=TEST_DATA['font_path_bold'],
+            font_path2=TEST_DATA['font_path_light'],
+            image_path=TEST_DATA['image_path'],
+            image_re_size=(400, 400),
+            image_crop_coords=(50, 0, 350, 400)
         )
 
-        name1 = TextPrimitive(
-            text=u'Федосов Артем',
-            position=Position(450, 50),
-            font_path=TEST_DATA['font_path_bold'],
-            font_size=50,
-            color='black'
-        )
-
-        name2 = TextPrimitive(
-            text=u'Борисович',
-            position=Position(450, 110),
-            font_path=TEST_DATA['font_path_bold'],
-            font_size=50,
-            color='black'
-        )
-
-        position = TextPrimitive(
-            text=u'Босс мафии',
-            position=Position(450, 170),
-            font_path=TEST_DATA['font_path_light'],
-            font_size=30,
-            color='grey'
-        )
-
-        contacts1 = TextPrimitive(
-            text=u'тел: +7 985 123 4567',
-            position=Position(550, 350),
-            font_path=TEST_DATA['font_path_light'],
-            font_size=20,
-            color='grey'
-        )
-
-        contacts2 = TextPrimitive(
-            text=u'email: boss.mafii@owndomain.ru',
-            position=Position(550, 370),
-            font_path=TEST_DATA['font_path_light'],
-            font_size=20,
-            color='grey'
-        )
-
-        contacts3 = TextPrimitive(
-            text=u'Рязань, ул. Пушкина 29/1',
-            position=Position(550, 390),
-            font_path=TEST_DATA['font_path_light'],
-            font_size=20,
-            color='grey'
-        )
-
-        primitives = [image_primitive, name1, name2, position, contacts1, contacts2, contacts3]
-
-        combine = ImageCombine(primitives, (900, 500), bg_color='white')  # Размер визитки - 90 х 50 мм
-        combine.save_to('test_image.png')
+        card.save_to('test_image.png')
