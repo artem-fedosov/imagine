@@ -1,4 +1,5 @@
-from imagine.primitives import ImageCombine, ImagePrimitive, TextPrimitive, Position
+from imagine.primitives import ImagePrimitive, TextPrimitive, Position
+from imagine.combine import ImageCombine
 
 
 class Card1(object):
@@ -14,14 +15,14 @@ class Card1(object):
             font_path2,
             image_path,
             image_re_size=None,
-            image_crop_coords=None,
+            image_crop_box=None,
     ):
 
         image_primitive = ImagePrimitive(
             position=Position(50, 50),
             filename=image_path,
             re_size=image_re_size,
-            crop_coords=image_crop_coords
+            crop_box=image_crop_box
         )
 
         name1 = TextPrimitive(

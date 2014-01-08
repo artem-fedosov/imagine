@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from PIL import Image, ImageDraw
-from imagine.primitives import Position, TextPrimitive, ImagePrimitive, ImageCombine
+from PIL import Image
+from imagine.primitives import Position, TextPrimitive, ImagePrimitive
+from imagine.combine import ImageCombine
 from card1 import Card1
 
 
@@ -20,7 +21,7 @@ class TestPrimitives(unittest.TestCase):
     def tearDown(self):
         del self.canvas
 
-    def test_text_primitive(self):
+    def test_create_text_primitive(self):
         text_primitive = TextPrimitive(
             text=u'Привет медвед!',
             position=Position(10, 10),
@@ -31,16 +32,41 @@ class TestPrimitives(unittest.TestCase):
 
         text_primitive.add_to_canvas(self.canvas)
 
-    def test_image_primitive(self):
+    def test_text_primitive_from_json(self):
+        position_dict = dict(x=10, y=10, order=10)
+        json_dict = dict(
+            type='text',
+            text=u'Привет медвед!',
+            position=position_dict,
+            font_path=TEST_DATA['font_path_bold'],
+            font_size=14,
+            color='black'
+        )
+        text_primitive = TextPrimitive.from_json(json_dict)
+        text_primitive.add_to_canvas(self.canvas)
+
+    def test_create_image_primitive(self):
         image_primitive = ImagePrimitive(
             position=Position(10, 10),
             filename=TEST_DATA['image_path'],
             re_size=(120, 120),
-            crop_coords=(20, 20, 100, 100)
+            crop_box=(20, 20, 100, 100)
         )
 
         image_primitive.add_to_canvas(self.canvas)
-        # self.canvas.show()
+
+    def test_image_primitive_from_json(self):
+        position_dict = dict(x=10, y=10, order=10)
+        json_dict = dict(
+            type='image',
+            position=position_dict,
+            filename=TEST_DATA['image_path'],
+            re_size=(120, 120),
+            crop_box=(20, 20, 100, 100)
+        )
+
+        image_primitive = ImagePrimitive.from_json(json_dict)
+        image_primitive.add_to_canvas(self.canvas)
 
 
 class TestCombine(unittest.TestCase):
@@ -56,7 +82,37 @@ class TestCombine(unittest.TestCase):
             font_path2=TEST_DATA['font_path_light'],
             image_path=TEST_DATA['image_path'],
             image_re_size=(400, 400),
-            image_crop_coords=(50, 0, 350, 400)
+            image_crop_box=(50, 0, 350, 400)
         )
 
         card.save_to('test_image.png')
+
+    def test_combine_from_json(self):
+        position_dict = dict(x=10, y=10, order=10)
+
+        image_json_dict = dict(
+            type='image',
+            position=position_dict,
+            filename=TEST_DATA['image_path'],
+            re_size=(120, 120),
+            crop_box=(20, 20, 100, 100)
+        )
+
+        text_json_dict = dict(
+            type='text',
+            text=u'Привет медвед!',
+            position=position_dict,
+            font_path=TEST_DATA['font_path_bold'],
+            font_size=14,
+            color='black'
+        )
+
+        json_dict = dict(
+            size=[400, 400],
+            bg_color='white',
+            primitives=[image_json_dict, text_json_dict]
+        )
+
+        combine = ImageCombine.from_json(json_dict)
+
+        combine.save_to('another_test_image.png')
